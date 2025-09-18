@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_18_210230) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_18_211219) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_18_210230) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["github_id"], name: "index_repositories_on_github_id", unique: true
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "pull_request_id", null: false
+    t.string "github_id", null: false
+    t.bigint "reviewer_id", null: false
+    t.string "state", null: false
+    t.datetime "submitted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["github_id"], name: "index_reviews_on_github_id", unique: true
+    t.index ["pull_request_id"], name: "index_reviews_on_pull_request_id"
+    t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
   end
 
   create_table "users", force: :cascade do |t|
