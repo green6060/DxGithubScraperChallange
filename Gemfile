@@ -39,7 +39,7 @@ gem "faraday", "~> 2.0"
 gem "faraday-retry", "~> 2.0"
 
 # Environment variables management
-gem "dotenv-rails", "~> 2.8"
+gem "dotenv-rails", "~> 3.1"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
