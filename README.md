@@ -11,14 +11,14 @@ This Rails application will collect comprehensive data from the Vercel organizat
 - **Target Organization**: Vercel
 - **Data Points**: All public repositories
 
-### Repositories
+### Repositories Data To Collect
 
 - Repository name
 - Repository URL
 - Privacy status (public/private)
 - Archive status (active/archived)
 
-### Pull Requests
+### Pull Request Data To Collect
 
 - PR number
 - PR title
@@ -49,7 +49,7 @@ This Rails application will collect comprehensive data from the Vercel organizat
 - **Database**: ActiveRecord ORM
 - **API Integration**: GitHub REST API
 - **Error Handling**: Graceful handling of rate limiting and API errors
-- **Data Persistence**: PostgreSQL (recommended) or SQLite for development
+- **Data Persistence**: PostgreSQL (recommended)
 
 ## Project Tickets
 
@@ -57,11 +57,11 @@ This Rails application will collect comprehensive data from the Vercel organizat
 
 #### Ticket 1: Rails Application Setup
 
-- [ ] Initialize new Rails application
-- [ ] Configure database (PostgreSQL for production, SQLite for development)
-- [ ] Set up basic project structure
-- [ ] Configure environment variables for GitHub API token
-- [ ] Add necessary gems (httparty, faraday, or similar for API calls)
+- [x] Initialize new Rails application
+- [x] Configure database (PostgreSQL for production, SQLite for development)
+- [x] Set up basic project structure
+- [x] Configure environment variables for GitHub API token
+- [x] Add necessary gems (httparty, faraday, or similar for API calls)
 
 #### Ticket 2: Database Schema Design
 
