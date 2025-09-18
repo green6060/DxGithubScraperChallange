@@ -65,10 +65,10 @@ This Rails application will collect comprehensive data from the Vercel organizat
 
 #### Ticket 2: Database Schema Design
 
-- [ ] Create migration for `repositories` table
-- [ ] Create migration for `pull_requests` table
+- [x] Create migration for `repositories` table
+- [x] Create migration for `pull_requests` table
 - [ ] Create migration for `reviews` table
-- [ ] Create migration for `users` table
+- [x] Create migration for `users` table
 - [ ] Set up proper foreign key relationships
 - [ ] Add database indexes for performance
 
