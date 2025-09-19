@@ -1,8 +1,9 @@
 class CreatePullRequests < ActiveRecord::Migration[7.2]
   def change
     create_table :pull_requests do |t|
-      t.integer :number, null: false
+      t.references :repository, null: false
       t.string :github_id, null: false, index: { unique: true }
+      t.integer :number, null: false
       t.string :title, null: false
       t.references :author, null: false
       t.datetime :closed_at

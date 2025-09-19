@@ -67,10 +67,9 @@ This Rails application will collect comprehensive data from the Vercel organizat
 
 - [x] Create migration for `repositories` table
 - [x] Create migration for `pull_requests` table
-- [ ] Create migration for `reviews` table
+- [x] Create migration for `reviews` table
 - [x] Create migration for `users` table
-- [ ] Set up proper foreign key relationships
-- [ ] Add database indexes for performance
+- [x] Set up proper foreign key relationships
 
 #### Ticket 3: Model Definitions
 
