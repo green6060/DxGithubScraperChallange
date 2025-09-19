@@ -73,8 +73,8 @@ This Rails application will collect comprehensive data from the Vercel organizat
 
 #### Ticket 3: Model Definitions
 
-- [ ] Create `Repository` model with validations
-- [ ] Create `PullRequest` model with validations
+- [x] Create `Repository` model with validations
+- [x] Create `PullRequest` model with validations
 - [ ] Create `Review` model with validations
 - [ ] Create `User` model with validations
 - [ ] Define model associations (has_many, belongs_to)
