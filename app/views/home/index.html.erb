@@ -92,9 +92,38 @@
 
   <% if @error_message %>
     <div class="error-section">
-      <div class="error-title">❌ API Error</div>
+      <div class="error-title">
+        <% case @error_type %>
+        <% when 'rate_limit' %>
+          🚫 Rate Limit Error
+        <% when 'authentication' %>
+          🔐 Authentication Error
+        <% when 'server_error' %>
+          ⚠️ Server Error
+        <% when 'transient_error' %>
+          🔄 Temporary Error
+        <% when 'not_found' %>
+          🔍 Not Found Error
+        <% else %>
+          ❌ API Error
+        <% end %>
+      </div>
       <p><strong>Error Message:</strong> <%= @error_message %></p>
-      <p><em>Error handling will be improved in Ticket 5</em></p>
+      
+      <% case @error_type %>
+      <% when 'rate_limit' %>
+        <p><strong>Solution:</strong> The service will automatically retry with exponential backoff. Please wait a moment and refresh the page.</p>
+      <% when 'authentication' %>
+        <p><strong>Solution:</strong> Please check your GitHub API token configuration in the environment variables.</p>
+      <% when 'server_error' %>
+        <p><strong>Solution:</strong> This is a GitHub API server issue. The service will retry automatically.</p>
+      <% when 'transient_error' %>
+        <p><strong>Solution:</strong> The GitHub API is temporarily unavailable. The service will retry automatically.</p>
+      <% when 'not_found' %>
+        <p><strong>Solution:</strong> The requested resource doesn't exist. This may be a configuration issue.</p>
+      <% else %>
+        <p><strong>Solution:</strong> Please check the logs for more details or contact support.</p>
+      <% end %>
     </div>
   <% end %>
 
