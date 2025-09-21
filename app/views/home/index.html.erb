@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Scraper Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f6f8fa;
+    }
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .data-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .error-section {
+      background: #ffeef0;
+      border: 1px solid #f85149;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .error-title {
+      color: #d1242f;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .data-title {
+      color: #0969da;
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    .data-item {
+      margin-bottom: 10px;
+      padding: 8px;
+      background: #f6f8fa;
+      border-radius: 4px;
+    }
+    .data-label {
+      font-weight: bold;
+      color: #24292f;
+    }
+    .data-value {
+      color: #656d76;
+    }
+    .json-data {
+      background: #f6f8fa;
+      border: 1px solid #d0d7de;
+      border-radius: 4px;
+      padding: 15px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status-success { background-color: #1a7f37; }
+    .status-error { background-color: #d1242f; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🚀 GitHub Scraper Dashboard</h1>
+    <p>Real-time GitHub API data collection and monitoring</p>
+    <% if @error_message %>
+      <span class="status-indicator status-error"></span>
+      <span style="color: #d1242f;">API Connection Failed</span>
+    <% else %>
+      <span class="status-indicator status-success"></span>
+      <span style="color: #1a7f37;">API Connection Active</span>
+    <% end %>
+  </div>
+
+  <% if @error_message %>
+    <div class="error-section">
+      <div class="error-title">❌ API Error</div>
+      <p><strong>Error Message:</strong> <%= @error_message %></p>
+      <p><em>Error handling will be improved in Ticket 5</em></p>
+    </div>
+  <% end %>
+
+  <% if @github_data %>
+    <div class="data-section">
+      <div class="data-title">📊 API Rate Limit Status</div>
+      <% if @github_data[:rate_limit] %>
+        <div class="data-item">
+          <span class="data-label">Core API Limit:</span>
+          <span class="data-value"><%= @github_data[:rate_limit]['rate']['limit'] %> requests/hour</span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Remaining:</span>
+          <span class="data-value"><%= @github_data[:rate_limit]['rate']['remaining'] %> requests</span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Reset Time:</span>
+          <span class="data-value"><%= Time.at(@github_data[:rate_limit]['rate']['reset']) %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">📁 Sample Repository Data</div>
+      <% if @github_data[:sample_repository] %>
+        <% repo = @github_data[:sample_repository] %>
+        <div class="data-item">
+          <span class="data-label">Repository:</span>
+          <span class="data-value"><%= repo['full_name'] %></span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Description:</span>
+          <span class="data-value"><%= repo['description'] || 'No description' %></span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Stars:</span>
+          <span class="data-value">⭐ <%= repo['stargazers_count'] %></span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Language:</span>
+          <span class="data-value"><%= repo['language'] || 'No language' %></span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Last Updated:</span>
+          <span class="data-value"><%= Time.parse(repo['updated_at']).strftime('%B %d, %Y at %I:%M %p') %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">🕒 Data Collection Info</div>
+      <div class="data-item">
+        <span class="data-label">Last API Call:</span>
+        <span class="data-value"><%= @github_data[:timestamp].strftime('%B %d, %Y at %I:%M %p') %></span>
+      </div>
+      <div class="data-item">
+        <span class="data-label">Status:</span>
+        <span class="data-value">✅ Data collection successful</span>
+      </div>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">🔍 Raw API Response (Debug)</div>
+      <div class="json-data"><%= JSON.pretty_generate(@github_data) %></div>
+    </div>
+  <% end %>
+
+  <div class="data-section">
+    <div class="data-title">📋 Next Steps</div>
+    <ul>
+      <li>✅ GitHub API Service implemented and working</li>
+      <li>🔄 Implement graceful error handling (Ticket 5)</li>
+      <li>📊 Add data collection for Vercel organization repositories</li>
+      <li>🔍 Collect pull requests and reviews data</li>
+      <li>💾 Store data in PostgreSQL database</li>
+    </ul>
+  </div>
+</body>
+</html>

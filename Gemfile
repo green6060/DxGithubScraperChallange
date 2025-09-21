@@ -35,6 +35,7 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 # HTTP client for GitHub API calls
+gem "httparty", "~> 0.21"
 gem "faraday", "~> 2.0"
 gem "faraday-retry", "~> 2.0"
 
