@@ -75,10 +75,10 @@ This Rails application will collect comprehensive data from the Vercel organizat
 
 - [x] Create `Repository` model with validations
 - [x] Create `PullRequest` model with validations
-- [ ] Create `Review` model with validations
-- [ ] Create `User` model with validations
-- [ ] Define model associations (has_many, belongs_to)
-- [ ] Add model validations and constraints
+- [x] Create `Review` model with validations
+- [x] Create `User` model with validations
+- [x] Define model associations (has_many, belongs_to)
+- [x] Add model validations and constraints
 
 ### Phase 2: GitHub API Integration
 
