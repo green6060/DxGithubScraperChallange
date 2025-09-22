@@ -19,7 +19,6 @@ default: &default
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
-
 development:
   <<: *default
   database: dx_github_scraper_challange_development
@@ -80,6 +79,4 @@ test:
 #
 production:
   <<: *default
-  database: dx_github_scraper_challange_production
-  username: dx_github_scraper_challange
-  password: <%= ENV["DX_GITHUB_SCRAPER_CHALLANGE_DATABASE_PASSWORD"] %>
+  url: <%= ENV['DATABASE_URL'] %>
