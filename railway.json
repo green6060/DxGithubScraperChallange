@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "bundle exec rails db:migrate && echo 'Starting Rails server...' && bundle exec rails server -b 0.0.0.0 -p $PORT -e production",
+    "startCommand": "echo 'Environment check...' && echo 'RAILS_ENV:' $RAILS_ENV && echo 'RAILS_MASTER_KEY:' $RAILS_MASTER_KEY && echo 'DATABASE_URL:' $DATABASE_URL && bundle exec rails db:migrate && echo 'Migrations completed, starting Rails server...' && bundle exec rails server -b 0.0.0.0 -p $PORT -e production",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
