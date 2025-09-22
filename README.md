@@ -96,7 +96,7 @@ This Rails application will collect comprehensive data from the Vercel organizat
 - [x] Add exponential backoff for rate limit errors
 - [x] Handle API errors gracefully (404, 403, 500, etc.)
 - [x] Add retry logic for transient failures
-- [x] Implement request queuing for rate limit compliance
+- [0] Implement request queuing for rate limit compliance
 
 #### Ticket 6: Repository Data Collection
 

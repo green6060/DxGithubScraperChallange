@@ -36,15 +36,23 @@ class HomeController < ApplicationController
     service = Github::GithubApiService.new(endpoint: 'rate_limit')
     rate_limit_data = service.call
     
-    # Get collected repository data from database
+    # Get collected data from database
     repository_stats = get_repository_stats
+    pull_request_stats = get_pull_request_stats
+    review_stats = get_review_stats
+    user_stats = get_user_stats
     recent_repositories = get_recent_repositories
+    recent_pull_requests = get_recent_pull_requests
     popular_repositories = get_popular_repositories
     
     {
       rate_limit: rate_limit_data,
       repository_stats: repository_stats,
+      pull_request_stats: pull_request_stats,
+      review_stats: review_stats,
+      user_stats: user_stats,
       recent_repositories: recent_repositories,
+      recent_pull_requests: recent_pull_requests,
       popular_repositories: popular_repositories,
       timestamp: Time.current
     }
@@ -61,8 +69,42 @@ class HomeController < ApplicationController
     }
   end
 
+  def get_pull_request_stats
+    {
+      total_count: PullRequest.count,
+      open_count: PullRequest.open.count,
+      closed_count: PullRequest.closed.count,
+      merged_count: PullRequest.merged.count,
+      last_updated: PullRequest.maximum(:updated_at)
+    }
+  end
+
+  def get_review_stats
+    {
+      total_count: Review.count,
+      approved_count: Review.approved.count,
+      changes_requested_count: Review.changes_requested.count,
+      commented_count: Review.commented.count,
+      dismissed_count: Review.dismissed.count,
+      last_updated: Review.maximum(:updated_at)
+    }
+  end
+
+  def get_user_stats
+    {
+      total_count: User.count,
+      contributors_count: User.active_contributors.count,
+      pr_authors_count: User.with_pull_requests.count,
+      reviewers_count: User.with_reviews.count
+    }
+  end
+
   def get_recent_repositories
     Repository.order(created_at: :desc).limit(10)
+  end
+
+  def get_recent_pull_requests
+    PullRequest.order(created_at: :desc).limit(10)
   end
 
   def get_popular_repositories

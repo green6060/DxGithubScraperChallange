@@ -10,7 +10,7 @@ class User < ApplicationRecord
     # Scopes
     scope :with_pull_requests, -> { joins(:authored_pull_requests).distinct }
     scope :with_reviews, -> { joins(:reviews).distinct }
-    scope :active_contributors, -> { joins(:authored_pull_requests).or(joins(:reviews)).distinct }
+    scope :active_contributors, -> { where(id: User.joins(:authored_pull_requests).select(:id)).or(where(id: User.joins(:reviews).select(:id))).distinct }
   
     # Instance methods
     def has_authored_prs?

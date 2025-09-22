@@ -196,6 +196,26 @@
       color: #656d76;
       word-break: break-all;
     }
+
+    /* Pull Request Styling */
+    .pr-title {
+      font-weight: 500;
+      color: #24292f;
+    }
+    .pr-status.open { color: #1a7f37; }
+    .pr-status.closed { color: #d1242f; }
+    .pr-merged.merged { color: #8250df; }
+    .pr-merged.not-merged { color: #656d76; }
+    .pr-author { color: #656d76; }
+    .pr-date { color: #656d76; }
+
+    /* Section Headers */
+    h3 {
+      margin: 20px 0 10px 0;
+      color: #24292f;
+      font-size: 16px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -268,37 +288,110 @@
     </div>
 
     <div class="data-section">
-      <div class="data-title">📊 Collected Repository Statistics</div>
+      <div class="data-title">📊 Collected Data Statistics</div>
+      
+      <!-- Repository Statistics -->
       <% if @github_data[:repository_stats] %>
-        <% stats = @github_data[:repository_stats] %>
+        <% repo_stats = @github_data[:repository_stats] %>
+        <h3>📁 Repositories</h3>
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-number"><%= stats[:total_count] %></div>
-            <div class="stat-label">Total Repositories</div>
+            <div class="stat-number"><%= repo_stats[:total_count] %></div>
+            <div class="stat-label">Total</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number"><%= stats[:public_count] %></div>
+            <div class="stat-number"><%= repo_stats[:public_count] %></div>
             <div class="stat-label">Public</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number"><%= stats[:private_count] %></div>
+            <div class="stat-number"><%= repo_stats[:private_count] %></div>
             <div class="stat-label">Private</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number"><%= stats[:active_count] %></div>
+            <div class="stat-number"><%= repo_stats[:active_count] %></div>
             <div class="stat-label">Active</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number"><%= stats[:archived_count] %></div>
+            <div class="stat-number"><%= repo_stats[:archived_count] %></div>
             <div class="stat-label">Archived</div>
           </div>
         </div>
-        <% if stats[:last_updated] %>
-          <div class="data-item">
-            <span class="data-label">Last Updated:</span>
-            <span class="data-value"><%= stats[:last_updated].strftime('%B %d, %Y at %I:%M %p') %></span>
+      <% end %>
+
+      <!-- Pull Request Statistics -->
+      <% if @github_data[:pull_request_stats] %>
+        <% pr_stats = @github_data[:pull_request_stats] %>
+        <h3>🔀 Pull Requests</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number"><%= pr_stats[:total_count] %></div>
+            <div class="stat-label">Total</div>
           </div>
-        <% end %>
+          <div class="stat-item">
+            <div class="stat-number"><%= pr_stats[:open_count] %></div>
+            <div class="stat-label">Open</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= pr_stats[:closed_count] %></div>
+            <div class="stat-label">Closed</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= pr_stats[:merged_count] %></div>
+            <div class="stat-label">Merged</div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Review Statistics -->
+      <% if @github_data[:review_stats] %>
+        <% review_stats = @github_data[:review_stats] %>
+        <h3>👀 Reviews</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number"><%= review_stats[:total_count] %></div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= review_stats[:approved_count] %></div>
+            <div class="stat-label">Approved</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= review_stats[:changes_requested_count] %></div>
+            <div class="stat-label">Changes Requested</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= review_stats[:commented_count] %></div>
+            <div class="stat-label">Commented</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= review_stats[:dismissed_count] %></div>
+            <div class="stat-label">Dismissed</div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- User Statistics -->
+      <% if @github_data[:user_stats] %>
+        <% user_stats = @github_data[:user_stats] %>
+        <h3>👥 Users</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number"><%= user_stats[:total_count] %></div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= user_stats[:contributors_count] %></div>
+            <div class="stat-label">Contributors</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= user_stats[:pr_authors_count] %></div>
+            <div class="stat-label">PR Authors</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= user_stats[:reviewers_count] %></div>
+            <div class="stat-label">Reviewers</div>
+          </div>
+        </div>
       <% end %>
     </div>
 
@@ -329,6 +422,39 @@
         </div>
       <% else %>
         <p>No repositories collected yet. Run the collection task to gather data.</p>
+      <% end %>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">🔀 Recent Pull Requests</div>
+      <% if @github_data[:recent_pull_requests] && @github_data[:recent_pull_requests].any? %>
+        <div class="repository-list">
+          <% @github_data[:recent_pull_requests].each do |pr| %>
+            <div class="repository-item">
+              <div class="repo-name">
+                <span class="pr-title">
+                  #<%= pr.number %> - <%= pr.title %>
+                </span>
+              </div>
+              <div class="repo-meta">
+                <span class="pr-status <%= pr.open? ? 'open' : 'closed' %>">
+                  <%= pr.open? ? '🟢 Open' : '🔴 Closed' %>
+                </span>
+                <span class="pr-merged <%= pr.merged? ? 'merged' : 'not-merged' %>">
+                  <%= pr.merged? ? '✅ Merged' : '❌ Not Merged' %>
+                </span>
+                <span class="pr-author">
+                  by <%= pr.author.login %>
+                </span>
+                <span class="pr-date">
+                  <%= pr.created_at.strftime('%b %d, %Y') %>
+                </span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p>No pull requests collected yet. Run the collection task to gather data.</p>
       <% end %>
     </div>
 
@@ -375,8 +501,22 @@
         <span class="data-value">✅ Data collection successful</span>
       </div>
     </div>
+
+    <div class="data-section">
+      <div class="data-title">🔍 Raw API Response (Debug)</div>
+      <div class="json-data"><%= JSON.pretty_generate(@github_data) %></div>
+    </div>
   <% end %>
 
-  
+  <div class="data-section">
+    <div class="data-title">📋 Next Steps</div>
+    <ul>
+      <li>✅ GitHub API Service implemented and working</li>
+      <li>🔄 Implement graceful error handling (Ticket 5)</li>
+      <li>📊 Add data collection for Vercel organization repositories</li>
+      <li>🔍 Collect pull requests and reviews data</li>
+      <li>💾 Store data in PostgreSQL database</li>
+    </ul>
+  </div>
 </body>
 </html>
