@@ -75,6 +75,127 @@
     }
     .status-success { background-color: #1a7f37; }
     .status-error { background-color: #d1242f; }
+
+    /* Repository Statistics Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e1e4e8;
+    }
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0969da;
+      margin-bottom: 5px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #656d76;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Repository List */
+    .repository-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .repository-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #f8f9fa;
+    }
+    .repository-item:hover {
+      background: #f1f3f4;
+      border-color: #d0d7de;
+    }
+    .repo-name {
+      flex: 1;
+    }
+    .repo-link {
+      color: #0969da;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .repo-link:hover {
+      text-decoration: underline;
+    }
+    .repo-meta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .repo-visibility.public { color: #1a7f37; }
+    .repo-visibility.private { color: #d1242f; }
+    .repo-status.active { color: #1a7f37; }
+    .repo-status.archived { color: #656d76; }
+    .repo-date { color: #656d76; }
+
+    /* Repository Grid */
+    .repository-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .repo-card {
+      border: 1px solid #e1e4e8;
+      border-radius: 8px;
+      padding: 15px;
+      background: white;
+      transition: box-shadow 0.2s;
+    }
+    .repo-card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .repo-card-header {
+      margin-bottom: 10px;
+    }
+    .repo-card-link {
+      color: #0969da;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .repo-card-link:hover {
+      text-decoration: underline;
+    }
+    .repo-card-meta {
+      font-size: 12px;
+    }
+    .repo-badges {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .badge {
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    .badge-public { background: #d1f2eb; color: #0d7377; }
+    .badge-private { background: #fadbd8; color: #c0392b; }
+    .badge-active { background: #d5f4e6; color: #27ae60; }
+    .badge-archived { background: #f4f4f4; color: #7f8c8d; }
+    .repo-url {
+      color: #656d76;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -147,29 +268,99 @@
     </div>
 
     <div class="data-section">
-      <div class="data-title">📁 Sample Repository Data</div>
-      <% if @github_data[:sample_repository] %>
-        <% repo = @github_data[:sample_repository] %>
-        <div class="data-item">
-          <span class="data-label">Repository:</span>
-          <span class="data-value"><%= repo['full_name'] %></span>
+      <div class="data-title">📊 Collected Repository Statistics</div>
+      <% if @github_data[:repository_stats] %>
+        <% stats = @github_data[:repository_stats] %>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number"><%= stats[:total_count] %></div>
+            <div class="stat-label">Total Repositories</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= stats[:public_count] %></div>
+            <div class="stat-label">Public</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= stats[:private_count] %></div>
+            <div class="stat-label">Private</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= stats[:active_count] %></div>
+            <div class="stat-label">Active</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= stats[:archived_count] %></div>
+            <div class="stat-label">Archived</div>
+          </div>
         </div>
-        <div class="data-item">
-          <span class="data-label">Description:</span>
-          <span class="data-value"><%= repo['description'] || 'No description' %></span>
+        <% if stats[:last_updated] %>
+          <div class="data-item">
+            <span class="data-label">Last Updated:</span>
+            <span class="data-value"><%= stats[:last_updated].strftime('%B %d, %Y at %I:%M %p') %></span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">🆕 Recently Collected Repositories</div>
+      <% if @github_data[:recent_repositories] && @github_data[:recent_repositories].any? %>
+        <div class="repository-list">
+          <% @github_data[:recent_repositories].each do |repo| %>
+            <div class="repository-item">
+              <div class="repo-name">
+                <a href="<%= repo.url %>" target="_blank" class="repo-link">
+                  <%= repo.name %>
+                </a>
+              </div>
+              <div class="repo-meta">
+                <span class="repo-visibility <%= repo.is_private? ? 'private' : 'public' %>">
+                  <%= repo.is_private? ? '🔒 Private' : '🌐 Public' %>
+                </span>
+                <span class="repo-status <%= repo.is_archived? ? 'archived' : 'active' %>">
+                  <%= repo.is_archived? ? '📦 Archived' : '✅ Active' %>
+                </span>
+                <span class="repo-date">
+                  Added <%= repo.created_at.strftime('%b %d, %Y') %>
+                </span>
+              </div>
+            </div>
+          <% end %>
         </div>
-        <div class="data-item">
-          <span class="data-label">Stars:</span>
-          <span class="data-value">⭐ <%= repo['stargazers_count'] %></span>
+      <% else %>
+        <p>No repositories collected yet. Run the collection task to gather data.</p>
+      <% end %>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">⭐ Sample Repositories</div>
+      <% if @github_data[:popular_repositories] && @github_data[:popular_repositories].any? %>
+        <div class="repository-grid">
+          <% @github_data[:popular_repositories].first(6).each do |repo| %>
+            <div class="repo-card">
+              <div class="repo-card-header">
+                <a href="<%= repo.url %>" target="_blank" class="repo-card-link">
+                  <%= repo.name %>
+                </a>
+              </div>
+              <div class="repo-card-meta">
+                <div class="repo-badges">
+                  <span class="badge <%= repo.is_private? ? 'badge-private' : 'badge-public' %>">
+                    <%= repo.is_private? ? 'Private' : 'Public' %>
+                  </span>
+                  <span class="badge <%= repo.is_archived? ? 'badge-archived' : 'badge-active' %>">
+                    <%= repo.is_archived? ? 'Archived' : 'Active' %>
+                  </span>
+                </div>
+                <div class="repo-url">
+                  <small><%= repo.url %></small>
+                </div>
+              </div>
+            </div>
+          <% end %>
         </div>
-        <div class="data-item">
-          <span class="data-label">Language:</span>
-          <span class="data-value"><%= repo['language'] || 'No language' %></span>
-        </div>
-        <div class="data-item">
-          <span class="data-label">Last Updated:</span>
-          <span class="data-value"><%= Time.parse(repo['updated_at']).strftime('%B %d, %Y at %I:%M %p') %></span>
-        </div>
+      <% else %>
+        <p>No repositories available for display.</p>
       <% end %>
     </div>
 
@@ -184,22 +375,8 @@
         <span class="data-value">✅ Data collection successful</span>
       </div>
     </div>
-
-    <div class="data-section">
-      <div class="data-title">🔍 Raw API Response (Debug)</div>
-      <div class="json-data"><%= JSON.pretty_generate(@github_data) %></div>
-    </div>
   <% end %>
 
-  <div class="data-section">
-    <div class="data-title">📋 Next Steps</div>
-    <ul>
-      <li>✅ GitHub API Service implemented and working</li>
-      <li>🔄 Implement graceful error handling (Ticket 5)</li>
-      <li>📊 Add data collection for Vercel organization repositories</li>
-      <li>🔍 Collect pull requests and reviews data</li>
-      <li>💾 Store data in PostgreSQL database</li>
-    </ul>
-  </div>
+  
 </body>
 </html>

@@ -36,14 +36,38 @@ class HomeController < ApplicationController
     service = Github::GithubApiService.new(endpoint: 'rate_limit')
     rate_limit_data = service.call
     
-    # Try to fetch a public repository as an example
-    repo_service = Github::GithubApiService.new(endpoint: 'repos/vercel/next.js')
-    repo_data = repo_service.call
+    # Get collected repository data from database
+    repository_stats = get_repository_stats
+    recent_repositories = get_recent_repositories
+    popular_repositories = get_popular_repositories
     
     {
       rate_limit: rate_limit_data,
-      sample_repository: repo_data,
+      repository_stats: repository_stats,
+      recent_repositories: recent_repositories,
+      popular_repositories: popular_repositories,
       timestamp: Time.current
     }
+  end
+
+  def get_repository_stats
+    {
+      total_count: Repository.count,
+      public_count: Repository.public_repos.count,
+      private_count: Repository.private_repos.count,
+      active_count: Repository.active.count,
+      archived_count: Repository.archived.count,
+      last_updated: Repository.maximum(:updated_at)
+    }
+  end
+
+  def get_recent_repositories
+    Repository.order(created_at: :desc).limit(10)
+  end
+
+  def get_popular_repositories
+    # For now, just get some sample repositories
+    # In a real app, we'd sort by stars or activity
+    Repository.limit(10)
   end
 end

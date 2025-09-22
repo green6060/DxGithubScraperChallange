@@ -33,4 +33,37 @@ namespace :github_scraper do
     # This will be implemented when we add the actual API service
     puts "API connection test will be implemented in Ticket 4"
   end
+
+  desc "Collect repositories for an organization"
+  task :collect_repositories, [:organization] => :environment do |t, args|
+    organization = args[:organization] || ENV.fetch('GITHUB_ORGANIZATION', 'vercel')
+    include_private = ENV.fetch('INCLUDE_PRIVATE', 'false') == 'true'
+    
+    puts "Starting repository collection for organization: #{organization}"
+    puts "Include private repositories: #{include_private}"
+    
+    begin
+      result = Github::RepositoryService.fetch_all_repositories(
+        organization: organization,
+        include_private: include_private
+      )
+      
+      puts "\n=== Repository Collection Complete ==="
+      puts "Total repositories fetched: #{result[:total_repositories]}"
+      puts "Total repositories saved: #{result[:total_saved]}"
+      puts "Pages processed: #{result[:pages_processed]}"
+      
+      if result[:total_saved] > 0
+        puts "\nSample of collected repositories:"
+        Repository.limit(5).each do |repo|
+          puts "  - #{repo.name} (#{repo.is_private? ? 'private' : 'public'})"
+        end
+      end
+      
+    rescue => e
+      puts "Repository collection failed: #{e.message}"
+      puts e.backtrace.join("\n")
+      exit 1
+    end
+  end
 end
