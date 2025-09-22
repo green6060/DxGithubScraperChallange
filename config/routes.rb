@@ -12,6 +12,9 @@ Rails.application.routes.draw do
   
   # Simple health check that doesn't depend on external APIs
   get "health" => proc { [200, { "Content-Type" => "text/plain" }, ["OK"]] }
+  
+  # Simple test route
+  get "test" => proc { [200, { "Content-Type" => "text/plain" }, ["Rails is working!"]] }
 
   # Render dynamic PWA files from app/views/pwa/*
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
