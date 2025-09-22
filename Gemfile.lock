@@ -110,6 +110,8 @@ GEM
       faraday (~> 2.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    groupdate (6.5.1)
+      activesupport (>= 7)
     httparty (0.23.1)
       csv
       mini_mime (>= 1.0.0)
@@ -324,6 +326,7 @@ DEPENDENCIES
   error_highlight (>= 0.4.0)
   faraday (~> 2.0)
   faraday-retry (~> 2.0)
+  groupdate (~> 6.3)
   httparty (~> 0.21)
   importmap-rails
   jbuilder

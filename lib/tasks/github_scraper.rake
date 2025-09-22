@@ -229,4 +229,54 @@ namespace :github_scraper do
       exit 1
     end
   end
+
+  desc "Generate analytics report"
+  task :analytics, [:organization, :date_range] => :environment do |task, args|
+    organization = args[:organization] || 'vercel'
+    date_range = args[:date_range] || '30_days'
+    
+    puts "📊 Generating analytics report"
+    puts "   Organization: #{organization}"
+    puts "   Date range: #{date_range}"
+    
+    begin
+      analytics = Analytics::DataAnalysisService.generate_report(
+        organization: organization,
+        date_range: date_range
+      )
+      
+      puts "✅ Analytics report generated successfully!"
+      puts "\n📈 Overview:"
+      puts "  Repositories: #{analytics[:overview][:total_repositories]}"
+      puts "  Pull Requests: #{analytics[:overview][:total_pull_requests]}"
+      puts "  Reviews: #{analytics[:overview][:total_reviews]}"
+      puts "  Users: #{analytics[:overview][:total_users]}"
+      puts "  Active Contributors: #{analytics[:overview][:active_contributors]}"
+      
+      puts "\n🔀 Pull Request Metrics:"
+      puts "  Merge Rate: #{(analytics[:pull_request_analysis][:merge_rate] * 100).round(1)}%"
+      puts "  Average Lifetime: #{analytics[:pull_request_analysis][:average_pr_lifetime]} days"
+      puts "  PR Velocity: #{analytics[:pull_request_analysis][:pr_velocity]} PRs/day"
+      
+      puts "\n👥 User Metrics:"
+      puts "  User Engagement: #{analytics[:user_analysis][:user_engagement]}%"
+      puts "  Users with Profiles: #{analytics[:user_analysis][:users_with_profiles]}"
+      
+      puts "\n👀 Review Metrics:"
+      puts "  Approval Rate: #{(analytics[:review_analysis][:approval_rate] * 100).round(1)}%"
+      puts "  Review Coverage: #{analytics[:review_analysis][:review_quality_metrics][:review_coverage]}%"
+      
+      if analytics[:insights].any?
+        puts "\n💡 Insights:"
+        analytics[:insights].each do |insight|
+          puts "  - #{insight[:type].upcase}: #{insight[:message]}"
+        end
+      end
+      
+    rescue => e
+      puts "❌ Analytics generation failed: #{e.message}"
+      puts "   Error type: #{e.class.name}"
+      exit 1
+    end
+  end
 end

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Analytics Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f6f8fa;
+    }
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .analytics-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .metric-card {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e1e4e8;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0969da;
+      margin-bottom: 5px;
+    }
+    .metric-label {
+      font-size: 12px;
+      color: #656d76;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #24292f;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e1e4e8;
+      padding-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 GitHub Analytics Dashboard</h1>
+    <p>Comprehensive analysis of GitHub organization data</p>
+  </div>
+
+  <% if @error_message %>
+    <div class="analytics-section">
+      <h3>❌ Analytics Error</h3>
+      <p><strong>Error:</strong> <%= @error_message %></p>
+    </div>
+  <% else %>
+    <!-- Overview Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">📈 Overview</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:overview][:total_repositories] %></div>
+          <div class="metric-label">Repositories</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:overview][:total_pull_requests] %></div>
+          <div class="metric-label">Pull Requests</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:overview][:total_reviews] %></div>
+          <div class="metric-label">Reviews</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:overview][:total_users] %></div>
+          <div class="metric-label">Users</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:overview][:active_contributors] %></div>
+          <div class="metric-label">Active Contributors</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Repository Analysis -->
+    <div class="analytics-section">
+      <h2 class="section-title">📁 Repository Analysis</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:repository_analysis][:public_count] %></div>
+          <div class="metric-label">Public</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:repository_analysis][:private_count] %></div>
+          <div class="metric-label">Private</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:repository_analysis][:active_count] %></div>
+          <div class="metric-label">Active</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:repository_analysis][:archived_count] %></div>
+          <div class="metric-label">Archived</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:repository_analysis][:repository_health] %>%</div>
+          <div class="metric-label">Health Score</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pull Request Analysis -->
+    <div class="analytics-section">
+      <h2 class="section-title">🔀 Pull Request Analysis</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:pull_request_analysis][:open_count] %></div>
+          <div class="metric-label">Open</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:pull_request_analysis][:closed_count] %></div>
+          <div class="metric-label">Closed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:pull_request_analysis][:merged_count] %></div>
+          <div class="metric-label">Merged</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= (@analytics[:pull_request_analysis][:merge_rate] * 100).round(1) %>%</div>
+          <div class="metric-label">Merge Rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:pull_request_analysis][:average_pr_lifetime] %> days</div>
+          <div class="metric-label">Avg Lifetime</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:pull_request_analysis][:pr_velocity] %></div>
+          <div class="metric-label">PRs/Day</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Analysis -->
+    <div class="analytics-section">
+      <h2 class="section-title">👥 User Analysis</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:user_analysis][:pr_authors] %></div>
+          <div class="metric-label">PR Authors</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:user_analysis][:reviewers] %></div>
+          <div class="metric-label">Reviewers</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:user_analysis][:users_with_profiles] %></div>
+          <div class="metric-label">With Profiles</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:user_analysis][:user_engagement] %>%</div>
+          <div class="metric-label">Engagement</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review Analysis -->
+    <div class="analytics-section">
+      <h2 class="section-title">👀 Review Analysis</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:review_analysis][:approved_count] %></div>
+          <div class="metric-label">Approved</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:review_analysis][:changes_requested_count] %></div>
+          <div class="metric-label">Changes Requested</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= @analytics[:review_analysis][:commented_count] %></div>
+          <div class="metric-label">Commented</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><%= (@analytics[:review_analysis][:approval_rate] * 100).round(1) %>%</div>
+          <div class="metric-label">Approval Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insights -->
+    <% if @analytics[:insights].any? %>
+      <div class="analytics-section">
+        <h2 class="section-title">💡 Insights & Recommendations</h2>
+        <ul>
+          <% @analytics[:insights].each do |insight| %>
+            <li><strong><%= insight[:type].upcase %>:</strong> <%= insight[:message] %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  <% end %>
+</body>
+</html>
