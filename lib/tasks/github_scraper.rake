@@ -127,19 +127,72 @@ namespace :github_scraper do
     end
   end
 
-  desc "Run comprehensive data collection (repos + PRs + reviews)"
-  task :collect_all, [:organization, :max_repos, :max_prs] => :environment do |task, args|
+  desc "Collect user profiles for existing contributors"
+  task :collect_user_profiles, [:max_users] => :environment do |task, args|
+    max_users = (args[:max_users] || 50).to_i
+    
+    puts "🚀 Starting user profile collection"
+    puts "   Max users: #{max_users}"
+    
+    begin
+      updated_count = Github::UserService.fetch_all_users_from_contributors
+      
+      puts "✅ User profile collection completed successfully!"
+      puts "\n📊 Collection Statistics:"
+      puts "  Profiles updated: #{updated_count}"
+      puts "  Total users: #{User.count}"
+      puts "  Users with profiles: #{User.with_profile.count}"
+      puts "  Top contributors: #{User.top_contributors.limit(5).pluck(:login).join(', ')}"
+      
+    rescue => e
+      puts "❌ User profile collection failed: #{e.message}"
+      puts "   Error type: #{e.class.name}"
+      exit 1
+    end
+  end
+
+  desc "Collect user profiles from organization"
+  task :collect_organization_users, [:organization, :max_users] => :environment do |task, args|
+    organization = args[:organization] || 'vercel'
+    max_users = (args[:max_users] || 50).to_i
+    
+    puts "🚀 Starting organization user profile collection"
+    puts "   Organization: #{organization}"
+    puts "   Max users: #{max_users}"
+    
+    begin
+      updated_count = Github::UserService.fetch_users_from_organization(organization, max_users: max_users)
+      
+      puts "✅ Organization user collection completed successfully!"
+      puts "\n📊 Collection Statistics:"
+      puts "  Profiles updated: #{updated_count}"
+      puts "  Total users: #{User.count}"
+      puts "  Users with complete profiles: #{User.where.not(name: [nil, '']).count}"
+      
+    rescue => e
+      puts "❌ Organization user collection failed: #{e.message}"
+      puts "   Error type: #{e.class.name}"
+      exit 1
+    end
+  end
+
+  desc "Run comprehensive data collection (repos + PRs + reviews + users)"
+  task :collect_all, [:organization, :max_repos, :max_prs, :max_users] => :environment do |task, args|
     organization = args[:organization] || 'vercel'
     max_repos = (args[:max_repos] || 5).to_i
     max_prs = (args[:max_prs] || 10).to_i
+    max_users = (args[:max_users] || 50).to_i
     
     puts "🚀 Starting comprehensive data collection"
     puts "   Organization: #{organization}"
     puts "   Max repositories: #{max_repos}"
     puts "   Max PRs per repo: #{max_prs}"
+    puts "   Max users: #{max_users}"
     puts "   Includes reviews: true"
+    puts "   Includes user profiles: true"
     
     begin
+      # First collect repositories, PRs, and reviews
       result = DataCollection::DataCollectionService.collect_all_data(
         organization: organization,
         max_repos: max_repos,
@@ -148,12 +201,23 @@ namespace :github_scraper do
       )
       
       if result[:success]
-        puts "✅ Comprehensive data collection completed successfully!"
+        puts "✅ Data collection completed successfully!"
+        puts "\n📊 Data Collection Statistics:"
+        puts "  Repositories: #{result[:repositories_count]}"
+        puts "  Pull Requests: #{result[:pull_requests_count]}"
+        puts "  Reviews: #{result[:reviews_count]}"
+        
+        # Now collect user profiles
+        puts "\n🔄 Collecting user profiles..."
+        user_count = Github::UserService.fetch_all_users_from_contributors
+        
         puts "\n📊 Final Statistics:"
         puts "  Repositories: #{result[:repositories_count]}"
         puts "  Pull Requests: #{result[:pull_requests_count]}"
         puts "  Reviews: #{result[:reviews_count]}"
         puts "  Users: #{User.count}"
+        puts "  User profiles updated: #{user_count}"
+        puts "  Complete profiles: #{User.where.not(name: [nil, '']).count}"
       else
         puts "❌ Data collection failed: #{result[:error]}"
         exit 1

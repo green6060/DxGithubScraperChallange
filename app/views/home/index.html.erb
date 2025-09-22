@@ -216,6 +216,54 @@
       font-size: 16px;
       font-weight: 600;
     }
+
+    /* Contributor Styling */
+    .contributor-rank {
+      background: #f1f8ff;
+      color: #0969da;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .contributor-link {
+      color: #0969da;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contributor-link:hover {
+      text-decoration: underline;
+    }
+    .contributor-login {
+      color: #656d76;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    .contributor-stats {
+      color: #1a7f37;
+      font-weight: 500;
+    }
+    .contributor-prs {
+      color: #8250df;
+    }
+    .contributor-reviews {
+      color: #d1242f;
+    }
+    .contributor-followers {
+      color: #656d76;
+    }
+    .contributor-company {
+      color: #0969da;
+      font-weight: 500;
+    }
+    .contributor-location {
+      color: #656d76;
+    }
+    .contributor-date {
+      color: #656d76;
+      font-size: 11px;
+    }
   </style>
 </head>
 <body>
@@ -391,6 +439,10 @@
             <div class="stat-number"><%= user_stats[:reviewers_count] %></div>
             <div class="stat-label">Reviewers</div>
           </div>
+          <div class="stat-item">
+            <div class="stat-number"><%= user_stats[:with_profiles_count] %></div>
+            <div class="stat-label">With Profiles</div>
+          </div>
         </div>
       <% end %>
     </div>
@@ -455,6 +507,81 @@
         </div>
       <% else %>
         <p>No pull requests collected yet. Run the collection task to gather data.</p>
+      <% end %>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">🏆 Top Contributors</div>
+      <% if @github_data[:top_contributors] && @github_data[:top_contributors].any? %>
+        <div class="repository-list">
+          <% @github_data[:top_contributors].each_with_index do |user, index| %>
+            <div class="repository-item">
+              <div class="repo-name">
+                <span class="contributor-rank">#<%= index + 1 %></span>
+                <a href="<%= user.github_profile_url %>" target="_blank" class="contributor-link">
+                  <%= user.display_name %>
+                </a>
+                <span class="contributor-login">(@<%= user.login %>)</span>
+              </div>
+              <div class="repo-meta">
+                <span class="contributor-stats">
+                  <%= user.total_contributions %> contributions
+                </span>
+                <span class="contributor-prs">
+                  <%= user.authored_pull_requests.count %> PRs
+                </span>
+                <span class="contributor-reviews">
+                  <%= user.reviews.count %> reviews
+                </span>
+                <% if user.followers.present? %>
+                  <span class="contributor-followers">
+                    <%= user.followers %> followers
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p>No contributors data available yet.</p>
+      <% end %>
+    </div>
+
+    <div class="data-section">
+      <div class="data-title">🆕 Recent Contributors</div>
+      <% if @github_data[:recent_contributors] && @github_data[:recent_contributors].any? %>
+        <div class="repository-list">
+          <% @github_data[:recent_contributors].each do |user| %>
+            <div class="repository-item">
+              <div class="repo-name">
+                <a href="<%= user.github_profile_url %>" target="_blank" class="contributor-link">
+                  <%= user.display_name %>
+                </a>
+                <span class="contributor-login">(@<%= user.login %>)</span>
+              </div>
+              <div class="repo-meta">
+                <span class="contributor-stats">
+                  <%= user.total_contributions %> contributions
+                </span>
+                <% if user.company.present? %>
+                  <span class="contributor-company">
+                    at <%= user.company %>
+                  </span>
+                <% end %>
+                <% if user.location.present? %>
+                  <span class="contributor-location">
+                    📍 <%= user.location %>
+                  </span>
+                <% end %>
+                <span class="contributor-date">
+                  Last active <%= user.updated_at.strftime('%b %d, %Y') %>
+                </span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p>No recent contributors data available yet.</p>
       <% end %>
     </div>
 

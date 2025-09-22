@@ -43,6 +43,8 @@ class HomeController < ApplicationController
     user_stats = get_user_stats
     recent_repositories = get_recent_repositories
     recent_pull_requests = get_recent_pull_requests
+    recent_contributors = get_recent_contributors
+    top_contributors = get_top_contributors
     popular_repositories = get_popular_repositories
     
     {
@@ -53,6 +55,8 @@ class HomeController < ApplicationController
       user_stats: user_stats,
       recent_repositories: recent_repositories,
       recent_pull_requests: recent_pull_requests,
+      recent_contributors: recent_contributors,
+      top_contributors: top_contributors,
       popular_repositories: popular_repositories,
       timestamp: Time.current
     }
@@ -95,8 +99,19 @@ class HomeController < ApplicationController
       total_count: User.count,
       contributors_count: User.active_contributors.count,
       pr_authors_count: User.with_pull_requests.count,
-      reviewers_count: User.with_reviews.count
+      reviewers_count: User.with_reviews.count,
+      with_profiles_count: User.with_profile.count,
+      top_contributors_count: User.top_contributors.limit(10).count,
+      recent_contributors_count: User.recent_contributors.limit(10).count
     }
+  end
+
+  def get_top_contributors
+    User.top_contributors.limit(10)
+  end
+
+  def get_recent_contributors
+    User.recent_contributors.limit(10)
   end
 
   def get_recent_repositories
