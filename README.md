@@ -110,19 +110,19 @@ This Rails application will collect comprehensive data from the Vercel organizat
 
 #### Ticket 7: Pull Request API Integration
 
-- [ ] Implement `fetch_repository_pull_requests` method
-- [ ] Handle pagination for PR lists
-- [ ] Parse PR data including statistics (additions, deletions, files)
-- [ ] Map PR data to model attributes
-- [ ] Handle different PR states (open, closed, merged)
+- [x] Implement `fetch_repository_pull_requests` method
+- [x] Handle pagination for PR lists
+- [x] Parse PR data including statistics (additions, deletions, files)
+- [x] Map PR data to model attributes
+- [x] Handle different PR states (open, closed, merged)
 
 #### Ticket 8: PR Data Processing
 
-- [ ] Implement PR data validation
-- [ ] Add logic to handle PR updates (re-fetch existing PRs)
-- [ ] Implement duplicate PR detection
-- [ ] Add error handling for individual PR fetch failures
-- [ ] Store PR statistics and metadata
+- [x] Implement PR data validation
+- [x] Add logic to handle PR updates (re-fetch existing PRs)
+- [x] Implement duplicate PR detection
+- [x] Add error handling for individual PR fetch failures
+- [x] Store PR statistics and metadata
 
 ### Phase 4: Review Data Collection
 
