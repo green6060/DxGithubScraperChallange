@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   
   # Simple health check that doesn't depend on external APIs
-  get "health" => proc { [200, { "Content-Type" => "application/json" }, [{ status: "ok", timestamp: Time.current }.to_json]] }
+  get "health" => proc { [200, { "Content-Type" => "text/plain" }, ["OK"]] }
 
   # Render dynamic PWA files from app/views/pwa/*
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
