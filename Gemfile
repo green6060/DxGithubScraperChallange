@@ -40,7 +40,7 @@ gem "faraday", "~> 2.0"
 gem "faraday-retry", "~> 2.0"
 
 # Environment variables management
-gem "dotenv-rails", "~> 2.8"
+gem "dotenv-rails", "~> 3.2"
 gem "groupdate", "~> 6.3"
 
 group :development, :test do
