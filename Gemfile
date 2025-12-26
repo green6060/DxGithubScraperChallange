@@ -37,7 +37,7 @@ gem "bootsnap", require: false
 # HTTP client for GitHub API calls
 gem "httparty", "~> 0.21"
 gem "faraday", "~> 2.0"
-gem "faraday-retry", "~> 2.0"
+gem "faraday-retry", "~> 2.4"
 
 # Environment variables management
 gem "dotenv-rails", "~> 2.8"
